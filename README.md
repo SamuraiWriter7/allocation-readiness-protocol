@@ -251,3 +251,106 @@ The Allocation Readiness Protocol is the final gate before value allocation begi
 Its responsibility is simple:
 
 > Record when a value trace is ready to move from audited provenance into economic circulation.
+
+## v0.2 — Blocking Rule Layer
+
+Version 0.2 introduces a machine-readable Blocking Rule Layer.
+
+The Allocation Readiness Record defined in v0.1 records the current readiness state of a case.
+
+The Blocking Rule Layer defines how specific readiness conditions affect downstream progression.
+
+```text
+Readiness State
+       ↓
+Rule Matching
+       ↓
+Blocking Decision
+       ↓
+Issue Record
+       ↓
+Remediation Action
+       ↓
+Reassessment
+```
+
+Each blocking rule can define:
+
+* rule identity
+* priority
+* matching conditions
+* resulting decision status
+* blocking issue code
+* severity
+* human review requirement
+* terminal or non-terminal behavior
+* remediation action
+* required evidence
+
+### Example rule flow
+
+```text
+Open Dispute
+      ↓
+Rule Match
+      ↓
+Decision: disputed
+      ↓
+Allocation progression suspended
+      ↓
+Human review
+      ↓
+Dispute resolution evidence
+      ↓
+Readiness reassessment
+```
+
+### Rule Resolution
+
+v0.2 supports explicit rule conflict resolution.
+
+The default decision precedence is:
+
+```text
+rejected
+   ↓
+disputed
+   ↓
+blocked
+   ↓
+pending_review
+   ↓
+ready
+```
+
+A rule set may use either:
+
+* `most_restrictive_decision`
+* `highest_priority_first`
+
+The rule layer does not itself execute royalty allocation or settle disputes.
+
+Its purpose is to provide a deterministic, reviewable explanation of why a case may or may not proceed.
+
+### Core Principle
+
+> A blocking decision should not be a dead end.
+
+Whenever remediation is possible, the protocol records the next required action and the evidence needed for reassessment.
+
+This creates a reusable cycle:
+
+```text
+Detect
+  ↓
+Block
+  ↓
+Explain
+  ↓
+Repair
+  ↓
+Reassess
+```
+
+The Blocking Rule Layer therefore transforms allocation readiness from a static checklist into a controlled transition system.
+
