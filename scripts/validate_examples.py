@@ -26,6 +26,11 @@ VALIDATION_TARGETS = [
         ROOT / "schemas" / "contribution-claim-bundle.schema.json",
         ROOT / "examples" / "contribution-claim-bundle.example.yaml",
     ),
+    (
+        "Review and Dispute Gate",
+        ROOT / "schemas" / "review-dispute-gate.schema.json",
+        ROOT / "examples" / "review-dispute-gate.example.yaml",
+    ),
 ]
 
 def load_json(path: Path) -> dict:
