@@ -1,0 +1,217 @@
+contribution_claim_bundle:
+  schema_version: "0.3.0"
+  record_type: contribution_claim_bundle
+
+  bundle_id: ccb-kazene-protocol-case-001
+  created_at: "2026-07-05T08:10:00+09:00"
+
+  subject:
+    subject_id: protocol-case-001
+    subject_type: protocol
+
+    title: Allocation Readiness Protocol
+
+    trace_receipt_refs:
+      - trr-question-origin-001
+      - trr-ai-structure-001
+      - trr-review-001
+
+    origin_claim_ref: origin-claim-protocol-001
+
+    derivative_record_refs:
+      - derivative-protocol-structure-001
+
+  claims:
+
+    - claim_id: cc-human-question-origin
+      claimant:
+        actor_id: actor-human-originator-001
+        actor_type: human
+        display_name: Human Originator
+        identity_status: bound
+        identity_ref: identity-human-001
+
+      contribution_type: human_question
+
+      claim_scope:
+        summary: >-
+          Originated the question of whether an audited trace should pass
+          through an independent readiness gate before royalty allocation.
+
+        artifact_refs:
+          - protocol-case-001
+
+        time_window:
+          start_at: "2026-07-05T05:50:00+09:00"
+          end_at: "2026-07-05T06:10:00+09:00"
+
+      evidence:
+        - evidence_id: evidence-human-question-001
+          evidence_type: trace_receipt
+          ref: trr-question-origin-001
+          description: >-
+            Trace receipt preserving the originating question and its
+            transition into protocol design.
+
+      relationship:
+        origin_relationship: originating
+
+        influences_claim_refs:
+          - cc-ai-structural-transformation
+
+      claimant_assertion:
+        asserted_importance: critical
+
+        statement: >-
+          The contribution claim concerns the originating problem definition,
+          not the final schema implementation.
+
+      assessment_status: supported
+
+      assessment:
+        assessed_by: human_reviewer
+        assessment_at: "2026-07-05T08:20:00+09:00"
+        evidence_sufficiency: sufficient
+
+        reason: >-
+          The trace evidence supports the claim that the readiness-gate
+          problem originated from the human question.
+
+        review_ref: review-human-origin-001
+
+      conflict_flags: []
+
+
+    - claim_id: cc-ai-structural-transformation
+      claimant:
+        actor_id: actor-ai-structure-001
+        actor_type: ai_agent
+        display_name: Structural Design Agent
+        identity_status: not_applicable
+
+      contribution_type: ai_transformation
+
+      claim_scope:
+        summary: >-
+          Transformed the originating problem into a structured protocol
+          architecture, schema proposal, decision model, and roadmap.
+
+        artifact_refs:
+          - allocation-readiness-record.schema.json
+          - allocation-blocking-rule-set.schema.json
+          - contribution-claim-bundle.schema.json
+
+      evidence:
+        - evidence_id: evidence-ai-transform-001
+          evidence_type: trace_receipt
+          ref: trr-ai-structure-001
+
+          description: >-
+            Trace record showing transformation from conceptual question
+            into protocol structure.
+
+        - evidence_id: evidence-ai-diff-001
+          evidence_type: diff_record
+          ref: diff-protocol-v0-1-to-v0-3
+
+      relationship:
+        origin_relationship: transformative
+
+        depends_on_claim_refs:
+          - cc-human-question-origin
+
+        influences_claim_refs:
+          - cc-review-verification
+
+      claimant_assertion:
+        asserted_importance: major
+
+        statement: >-
+          The contribution concerns structural transformation and formalization,
+          not the originating question.
+
+      assessment_status: supported
+
+      assessment:
+        assessed_by: multi_wing_review
+        assessment_at: "2026-07-05T08:25:00+09:00"
+        evidence_sufficiency: sufficient
+
+        reason: >-
+          Trace and diff evidence support the structural transformation claim.
+
+        review_ref: review-ai-transform-001
+
+      conflict_flags: []
+
+
+    - claim_id: cc-review-verification
+      claimant:
+        actor_id: actor-review-wing-001
+        actor_type: ai_agent
+        display_name: Verification Wing
+        identity_status: not_applicable
+
+      contribution_type: ai_verification
+
+      claim_scope:
+        summary: >-
+          Reviewed schema consistency and protocol boundary preservation.
+
+        artifact_refs:
+          - contribution-claim-bundle.schema.json
+
+      evidence:
+        - evidence_id: evidence-review-001
+          evidence_type: audit_record
+          ref: audit-contribution-schema-001
+
+      relationship:
+        origin_relationship: verification_only
+
+        depends_on_claim_refs:
+          - cc-ai-structural-transformation
+
+      claimant_assertion:
+        asserted_importance: supporting
+
+      assessment_status: supported
+
+      assessment:
+        assessed_by: human_reviewer
+        assessment_at: "2026-07-05T08:30:00+09:00"
+        evidence_sufficiency: sufficient
+
+        reason: >-
+          The verification record supports a bounded review contribution.
+
+        review_ref: review-verification-001
+
+      conflict_flags: []
+
+  bundle_assessment:
+    status: assessed
+
+    claim_count: 3
+    supported_claim_count: 3
+    pending_claim_count: 0
+    disputed_claim_count: 0
+
+    conflict_status: none
+
+    allocation_eligibility: eligible_for_readiness_check
+
+    summary: >-
+      The bundle contains supported and role-separated contribution claims
+      with no detected conflicts. It may proceed to allocation readiness review.
+
+  review_refs:
+    - review-human-origin-001
+    - review-ai-transform-001
+    - review-verification-001
+
+  dispute_refs: []
+
+  notes: >-
+    Contribution claims describe evidenced roles and relationships.
+    This bundle does not assign royalty percentages or execute allocation.
