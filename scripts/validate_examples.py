@@ -16,8 +16,12 @@ VALIDATION_TARGETS = [
         ROOT / "schemas" / "allocation-readiness-record.schema.json",
         ROOT / "examples" / "allocation-readiness-record.example.yaml",
     ),
+    (
+        "Allocation Blocking Rule Set",
+        ROOT / "schemas" / "allocation-blocking-rule-set.schema.json",
+        ROOT / "examples" / "allocation-blocking-rule-set.example.yaml",
+    ),
 ]
-
 
 def load_json(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as file:
