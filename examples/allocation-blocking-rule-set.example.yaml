@@ -1,0 +1,367 @@
+allocation_blocking_rule_set:
+  schema_version: "0.2.0"
+  record_type: allocation_blocking_rule_set
+
+  rule_set_id: abrs-default-v0-2
+  created_at: "2026-07-05T07:30:00+09:00"
+
+  target_record_type: allocation_readiness_record
+
+  resolution_policy:
+    strategy: most_restrictive_decision
+
+    decision_precedence:
+      - rejected
+      - disputed
+      - blocked
+      - pending_review
+      - ready
+
+    stop_after_terminal_rule: true
+
+  default_behavior: preserve_existing_decision
+
+  rules:
+
+    - rule_id: abr-open-dispute
+      enabled: true
+      priority: 1000
+
+      title: Open dispute gate
+
+      description: >-
+        A case with an open dispute cannot proceed toward royalty allocation.
+
+      match: all
+
+      conditions:
+        - field: dispute_status
+          operator: equals
+          values:
+            - open
+
+      action:
+        decision_status: disputed
+        issue_code: open_dispute
+        severity: blocking
+
+        message: >-
+          Allocation progression is suspended while the dispute remains open.
+
+        requires_human_review: true
+        terminal: true
+
+      remediation:
+        allowed: true
+        next_action: resolve_dispute
+
+        required_evidence:
+          - dispute resolution record
+          - reviewer decision record
+
+
+    - rule_id: abr-audit-failed
+      enabled: true
+      priority: 950
+
+      title: Failed audit gate
+
+      description: >-
+        A failed audit blocks allocation progression until the case is
+        corrected and reassessed.
+
+      match: all
+
+      conditions:
+        - field: audit_status
+          operator: equals
+          values:
+            - failed
+
+      action:
+        decision_status: blocked
+        issue_code: audit_failed
+        severity: blocking
+
+        message: >-
+          The case cannot proceed because the current audit result is failed.
+
+        requires_human_review: true
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: rerun_audit
+
+        required_evidence:
+          - corrected evidence bundle
+          - replacement audit record
+
+
+    - rule_id: abr-license-restricted
+      enabled: true
+      priority: 900
+
+      title: Restricted license gate
+
+      description: >-
+        Restricted license conditions block allocation until permitted use
+        and economic treatment are clarified.
+
+      match: all
+
+      conditions:
+        - field: license_status
+          operator: equals
+          values:
+            - restricted
+
+      action:
+        decision_status: blocked
+        issue_code: license_restricted
+        severity: blocking
+
+        message: >-
+          The current license condition does not permit direct progression
+          toward allocation.
+
+        requires_human_review: true
+        terminal: true
+
+      remediation:
+        allowed: true
+        next_action: clarify_license
+
+        required_evidence:
+          - applicable license terms
+          - permission or exception record
+
+
+    - rule_id: abr-license-unknown
+      enabled: true
+      priority: 850
+
+      title: Unknown license review
+
+      description: >-
+        Unknown license conditions require review before value allocation.
+
+      match: all
+
+      conditions:
+        - field: license_status
+          operator: equals
+          values:
+            - unknown
+
+      action:
+        decision_status: pending_review
+        issue_code: license_unknown
+        severity: warning
+
+        message: >-
+          License conditions must be identified before allocation readiness
+          can be confirmed.
+
+        requires_human_review: true
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: clarify_license
+
+        required_evidence:
+          - license source
+          - usage permission record
+
+
+    - rule_id: abr-origin-unverified
+      enabled: true
+      priority: 800
+
+      title: Unverified origin gate
+
+      description: >-
+        An unverified or pending origin claim blocks direct allocation
+        progression.
+
+      match: any
+
+      conditions:
+        - field: origin_status
+          operator: in
+          values:
+            - unverified
+            - pending
+
+      action:
+        decision_status: blocked
+        issue_code: unverified_origin
+        severity: blocking
+
+        message: >-
+          Origin verification must be completed before allocation progression.
+
+        requires_human_review: false
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: verify_origin
+
+        required_evidence:
+          - origin claim evidence
+          - timestamp or trace evidence
+
+
+    - rule_id: abr-derivative-unresolved
+      enabled: true
+      priority: 750
+
+      title: Unresolved derivative gate
+
+      description: >-
+        Unresolved derivative relationships prevent reliable allocation
+        attribution.
+
+      match: any
+
+      conditions:
+        - field: derivative_status
+          operator: in
+          values:
+            - unresolved
+            - pending
+
+      action:
+        decision_status: blocked
+        issue_code: unresolved_derivative
+        severity: blocking
+
+        message: >-
+          Derivative relationships must be resolved before allocation
+          progression.
+
+        requires_human_review: false
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: resolve_derivative
+
+        required_evidence:
+          - derivative relationship record
+          - transformation evidence
+
+
+    - rule_id: abr-contribution-unassessed
+      enabled: true
+      priority: 700
+
+      title: Contribution assessment gate
+
+      description: >-
+        A contribution claim that has not yet been assessed requires review
+        before downstream allocation.
+
+      match: any
+
+      conditions:
+        - field: contribution_status
+          operator: in
+          values:
+            - unassessed
+            - pending
+
+      action:
+        decision_status: pending_review
+        issue_code: contribution_unassessed
+        severity: warning
+
+        message: >-
+          Contribution assessment must be completed before final readiness.
+
+        requires_human_review: false
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: assess_contribution
+
+        required_evidence:
+          - contribution claim bundle
+
+
+    - rule_id: abr-identity-unbound
+      enabled: true
+      priority: 650
+
+      title: Identity binding gate
+
+      description: >-
+        Allocation cannot proceed when an applicable claimant or contributor
+        identity remains unbound.
+
+      match: any
+
+      conditions:
+        - field: identity_status
+          operator: in
+          values:
+            - unbound
+            - pending
+
+      action:
+        decision_status: blocked
+        issue_code: identity_unbound
+        severity: blocking
+
+        message: >-
+          Required identity binding must be completed before allocation.
+
+        requires_human_review: false
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: bind_identity
+
+        required_evidence:
+          - identity binding record
+
+
+    - rule_id: abr-human-review-required
+      enabled: true
+      priority: 600
+
+      title: Human review gate
+
+      description: >-
+        Cases requiring or awaiting human review cannot be marked ready.
+
+      match: any
+
+      conditions:
+        - field: human_review_status
+          operator: in
+          values:
+            - required
+            - pending
+
+      action:
+        decision_status: pending_review
+        issue_code: human_review_required
+        severity: warning
+
+        message: >-
+          Human review must be completed before readiness can be finalized.
+
+        requires_human_review: true
+        terminal: false
+
+      remediation:
+        allowed: true
+        next_action: complete_human_review
+
+        required_evidence:
+          - human review decision
