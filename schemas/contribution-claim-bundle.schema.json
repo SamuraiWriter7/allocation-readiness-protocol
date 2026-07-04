@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/contribution-claim-bundle.schema.json",
+  "title": "Contribution Claim Bundle",
+  "description": "A machine-readable bundle for collecting, evidencing, and reviewing contribution claims before allocation readiness and royalty calculation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contribution_claim_bundle"
+  ],
+  "properties": {
+    "contribution_claim_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "record_type",
+        "bundle_id",
+        "created_at",
+        "subject",
+        "claims",
+        "bundle_assessment"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.3.0"
+        },
+        "record_type": {
+          "const": "contribution_claim_bundle"
+        },
+        "bundle_id": {
+          "type": "string",
+          "pattern": "^ccb-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "subject_id",
+            "subject_type"
+          ],
+          "properties": {
+            "subject_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "subject_type": {
+              "enum": [
+                "creative_work",
+                "protocol",
+                "software_artifact",
+                "research_output",
+                "agent_output",
+                "composite_value_case",
+                "other"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "trace_receipt_refs": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "origin_claim_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "derivative_record_refs": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/contributionClaim"
+          }
+        },
+        "bundle_assessment": {
+          "$ref": "#/$defs/bundleAssessment"
+        },
+        "review_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dispute_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "actorRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_id",
+        "actor_type",
+        "identity_status"
+      ],
+      "properties": {
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor_type": {
+          "enum": [
+            "human",
+            "ai_model",
+            "ai_agent",
+            "organization",
+            "source",
+            "tool",
+            "memory_system",
+            "mixed"
+          ]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity_status": {
+          "enum": [
+            "bound",
+            "unbound",
+            "pending",
+            "not_applicable"
+          ]
+        },
+        "identity_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "evidence_type",
+        "ref"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_type": {
+          "enum": [
+            "trace_receipt",
+            "source_interaction",
+            "timestamp_record",
+            "diff_record",
+            "audit_record",
+            "human_attestation",
+            "tool_log",
+            "memory_trace",
+            "derivative_record",
+            "other"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "contributionClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "claimant",
+        "contribution_type",
+        "claim_scope",
+        "evidence",
+        "assessment_status"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^cc-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "claimant": {
+          "$ref": "#/$defs/actorRef"
+        },
+        "contribution_type": {
+          "enum": [
+            "human_question",
+            "human_direction",
+            "concept_origin",
+            "structural_design",
+            "ai_transformation",
+            "ai_analysis",
+            "ai_verification",
+            "source_contribution",
+            "tool_contribution",
+            "memory_contribution",
+            "derivative_transformation",
+            "review_contribution",
+            "other"
+          ]
+        },
+        "claim_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "summary",
+            "artifact_refs"
+          ],
+          "properties": {
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_refs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "time_window": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "start_at",
+                "end_at"
+              ],
+              "properties": {
+                "start_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "end_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        },
+        "relationship": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "origin_relationship": {
+              "enum": [
+                "originating",
+                "derivative",
+                "transformative",
+                "supporting",
+                "verification_only",
+                "unknown"
+              ]
+            },
+            "depends_on_claim_refs": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "influences_claim_refs": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "claimant_assertion": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "asserted_importance": {
+              "enum": [
+                "critical",
+                "major",
+                "supporting",
+                "minor",
+                "unspecified"
+              ]
+            },
+            "statement": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "assessment_status": {
+          "enum": [
+            "unassessed",
+            "pending",
+            "supported",
+            "partially_supported",
+            "unsupported",
+            "disputed"
+          ]
+        },
+        "assessment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "assessed_by",
+            "assessment_at",
+            "evidence_sufficiency",
+            "reason"
+          ],
+          "properties": {
+            "assessed_by": {
+              "enum": [
+                "protocol_rule",
+                "human_reviewer",
+                "multi_wing_review"
+              ]
+            },
+            "assessment_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "evidence_sufficiency": {
+              "enum": [
+                "sufficient",
+                "partial",
+                "insufficient"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "review_ref": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "conflict_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "duplicate_claim",
+              "scope_overlap",
+              "origin_conflict",
+              "evidence_conflict",
+              "identity_conflict",
+              "license_conflict",
+              "allocation_conflict",
+              "other"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "assessment_status": {
+                "enum": [
+                  "supported",
+                  "partially_supported",
+                  "unsupported",
+                  "disputed"
+                ]
+              }
+            },
+            "required": [
+              "assessment_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "assessment"
+            ]
+          }
+        }
+      ]
+    },
+    "bundleAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "claim_count",
+        "conflict_status",
+        "allocation_eligibility"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unassessed",
+            "pending",
+            "assessed",
+            "disputed",
+            "blocked"
+          ]
+        },
+        "claim_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "supported_claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pending_claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disputed_claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "conflict_status": {
+          "enum": [
+            "none",
+            "detected",
+            "under_review",
+            "resolved"
+          ]
+        },
+        "allocation_eligibility": {
+          "enum": [
+            "eligible_for_readiness_check",
+            "requires_review",
+            "blocked",
+            "disputed"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
