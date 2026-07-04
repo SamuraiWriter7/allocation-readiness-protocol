@@ -2,6 +2,156 @@
 
 All notable changes to the Allocation Readiness Protocol will be documented in this file.
 
+## v0.4.0-candidate — Review / Dispute Gate
+
+### Added
+
+* Review and Dispute Gate schema
+* case subject references
+* review trigger records
+* participant roles
+* notification status
+* review routing
+* human final authority flag
+* review scope definitions
+* case lifecycle states
+* dispute windows
+* late submission policies
+* evidence submissions
+* responses and clarifications
+* structured counterclaims
+* review findings
+* escalation policies
+* resolution decisions
+* required upstream record updates
+* resolution finality states
+* readiness handoff records
+* example review and dispute case
+* validation target for the v0.4 schema and example
+
+### Review Triggers
+
+Cases may enter the Review / Dispute Gate because of:
+
+* claim conflict
+* manual review
+* blocking rule
+* audit exception
+* license issue
+* identity issue
+* open dispute
+* other procedural triggers
+
+### Review Routes
+
+Supported review routes include:
+
+* `single_review`
+* `multi_stage_review`
+* `multi_wing_then_human`
+* `human_only`
+* `mediation_then_review`
+
+The protocol can explicitly preserve human final authority.
+
+### Case States
+
+The review lifecycle introduces:
+
+* `queued`
+* `under_review`
+* `awaiting_response`
+* `disputed`
+* `escalated`
+* `resolved`
+* `closed_without_resolution`
+
+### Dispute Window
+
+v0.4 introduces explicit opening and closing times for dispute submissions.
+
+Late submission handling may use:
+
+* `reject`
+* `manual_exception_review`
+* `accept_with_flag`
+
+### Counterclaims
+
+Counterclaims may challenge existing contribution claims on grounds including:
+
+* prior origin
+* scope overlap
+* insufficient evidence
+* incorrect attribution
+* license restriction
+* identity mismatch
+
+### Review Findings
+
+Review findings may evaluate:
+
+* origin
+* claim scope
+* evidence
+* identity
+* license conditions
+* contribution support
+* procedural compliance
+
+Findings may be:
+
+* supported
+* partially supported
+* unsupported
+* inconclusive
+
+### Resolution Decisions
+
+Initial resolution outcomes include:
+
+* `claims_confirmed`
+* `claims_modified`
+* `claim_removed`
+* `bundle_returned_for_reassessment`
+* `case_rejected`
+* `no_resolution`
+
+Resolution records may also identify required updates to upstream contribution, evidence, identity, license, or conflict records.
+
+### Readiness Handoff
+
+Resolved cases may be routed to:
+
+* allocation readiness reassessment
+* contribution reassessment
+* audit
+* continued blocking
+* terminal rejection
+
+### Core Principle
+
+v0.4 formalizes the principle that unresolved contribution conflicts should prevent automatic allocation, while resolved cases should have an explicit route back into the protocol lifecycle.
+
+The protocol now supports:
+
+```text
+Contribution Claim
+      ↓
+Conflict Detection
+      ↓
+Review / Dispute
+      ↓
+Resolution
+      ↓
+Record Repair
+      ↓
+Readiness Reassessment
+```
+
+This release adds procedural review and dispute resolution to the transition between contribution causality and value allocation.
+
+
 ## v0.3.0-candidate — Contribution Claim Bundle
 
 ### Added
