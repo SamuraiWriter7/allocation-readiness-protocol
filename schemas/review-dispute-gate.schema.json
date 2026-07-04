@@ -1,0 +1,725 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/review-dispute-gate.schema.json",
+  "title": "Review and Dispute Gate",
+  "description": "A machine-readable procedural record for routing contribution conflicts, collecting evidence, handling disputes, recording decisions, and returning resolved cases to allocation readiness assessment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_dispute_gate"
+  ],
+  "properties": {
+    "review_dispute_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "record_type",
+        "gate_id",
+        "created_at",
+        "subject",
+        "trigger",
+        "participants",
+        "review_route",
+        "case_status",
+        "dispute_window",
+        "submissions",
+        "escalation_policy"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.4.0"
+        },
+        "record_type": {
+          "const": "review_dispute_gate"
+        },
+        "gate_id": {
+          "type": "string",
+          "pattern": "^rdg-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "subject": {
+          "$ref": "#/$defs/subject"
+        },
+        "trigger": {
+          "$ref": "#/$defs/trigger"
+        },
+        "participants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/participant"
+          }
+        },
+        "review_route": {
+          "$ref": "#/$defs/reviewRoute"
+        },
+        "case_status": {
+          "enum": [
+            "queued",
+            "under_review",
+            "awaiting_response",
+            "disputed",
+            "escalated",
+            "resolved",
+            "closed_without_resolution"
+          ]
+        },
+        "dispute_window": {
+          "$ref": "#/$defs/disputeWindow"
+        },
+        "submissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/submission"
+          }
+        },
+        "counterclaims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/counterclaim"
+          }
+        },
+        "review_findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reviewFinding"
+          }
+        },
+        "escalation_policy": {
+          "$ref": "#/$defs/escalationPolicy"
+        },
+        "resolution": {
+          "$ref": "#/$defs/resolution"
+        },
+        "readiness_handoff": {
+          "$ref": "#/$defs/readinessHandoff"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "case_status": {
+                "const": "resolved"
+              }
+            },
+            "required": [
+              "case_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "resolution",
+              "readiness_handoff"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "case_status": {
+                "const": "escalated"
+              }
+            },
+            "required": [
+              "case_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "escalation_policy": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "subject_type",
+        "contribution_bundle_ref"
+      ],
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject_type": {
+          "enum": [
+            "contribution_claim",
+            "contribution_bundle",
+            "origin_claim",
+            "derivative_relation",
+            "license_case",
+            "identity_case",
+            "composite_case"
+          ]
+        },
+        "contribution_bundle_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claim_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "readiness_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blocking_rule_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trigger_type",
+        "detected_at",
+        "summary"
+      ],
+      "properties": {
+        "trigger_type": {
+          "enum": [
+            "claim_conflict",
+            "manual_review",
+            "blocking_rule",
+            "audit_exception",
+            "license_issue",
+            "identity_issue",
+            "open_dispute",
+            "other"
+          ]
+        },
+        "detected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conflict_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "duplicate_claim",
+              "scope_overlap",
+              "origin_conflict",
+              "evidence_conflict",
+              "identity_conflict",
+              "license_conflict",
+              "allocation_conflict",
+              "other"
+            ]
+          }
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "participant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "participant_id",
+        "role",
+        "actor_type",
+        "notification_status"
+      ],
+      "properties": {
+        "participant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "claimant",
+            "respondent",
+            "reviewer",
+            "mediator",
+            "human_gate",
+            "observer"
+          ]
+        },
+        "actor_type": {
+          "enum": [
+            "human",
+            "ai_agent",
+            "organization",
+            "multi_wing_review",
+            "protocol_service"
+          ]
+        },
+        "identity_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notification_status": {
+          "enum": [
+            "pending",
+            "notified",
+            "acknowledged",
+            "not_required"
+          ]
+        }
+      }
+    },
+    "reviewRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_type",
+        "reviewer_type",
+        "human_final_authority",
+        "review_scope"
+      ],
+      "properties": {
+        "route_type": {
+          "enum": [
+            "single_review",
+            "multi_stage_review",
+            "multi_wing_then_human",
+            "human_only",
+            "mediation_then_review"
+          ]
+        },
+        "reviewer_type": {
+          "enum": [
+            "human_reviewer",
+            "multi_wing_review",
+            "hybrid_review_panel"
+          ]
+        },
+        "human_final_authority": {
+          "type": "boolean"
+        },
+        "review_scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "origin",
+              "scope",
+              "evidence",
+              "identity",
+              "license",
+              "contribution_role",
+              "contribution_support",
+              "allocation_eligibility"
+            ]
+          }
+        },
+        "assigned_reviewer_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "disputeWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "opens_at",
+        "closes_at",
+        "late_submission_policy"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "scheduled",
+            "open",
+            "closed",
+            "extended",
+            "waived"
+          ]
+        },
+        "opens_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closes_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "late_submission_policy": {
+          "enum": [
+            "reject",
+            "manual_exception_review",
+            "accept_with_flag"
+          ]
+        },
+        "extension_reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "submission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submission_id",
+        "submitted_by",
+        "submission_type",
+        "submitted_at",
+        "evidence_refs",
+        "status"
+      ],
+      "properties": {
+        "submission_id": {
+          "type": "string",
+          "pattern": "^sub-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "submitted_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "submission_type": {
+          "enum": [
+            "initial_statement",
+            "response",
+            "evidence_submission",
+            "counter_evidence",
+            "clarification",
+            "reviewer_request_response",
+            "other"
+          ]
+        },
+        "submitted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "enum": [
+            "received",
+            "accepted_for_review",
+            "rejected_as_late",
+            "requires_clarification"
+          ]
+        }
+      }
+    },
+    "counterclaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "counterclaim_id",
+        "raised_by",
+        "targets_claim_ref",
+        "basis",
+        "status"
+      ],
+      "properties": {
+        "counterclaim_id": {
+          "type": "string",
+          "pattern": "^ctr-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "raised_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "targets_claim_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "basis": {
+          "enum": [
+            "prior_origin",
+            "scope_overlap",
+            "insufficient_evidence",
+            "incorrect_attribution",
+            "license_restriction",
+            "identity_mismatch",
+            "other"
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "enum": [
+            "submitted",
+            "under_review",
+            "supported",
+            "partially_supported",
+            "unsupported",
+            "withdrawn"
+          ]
+        }
+      }
+    },
+    "reviewFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "finding_type",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string",
+          "pattern": "^finding-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "finding_type": {
+          "enum": [
+            "origin_finding",
+            "scope_finding",
+            "evidence_finding",
+            "identity_finding",
+            "license_finding",
+            "contribution_finding",
+            "procedural_finding"
+          ]
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "partially_supported",
+            "unsupported",
+            "inconclusive"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "affected_claim_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "escalationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "triggers",
+        "route"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "triggers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "material_evidence_conflict",
+              "reviewer_deadlock",
+              "identity_failure",
+              "license_uncertainty",
+              "procedural_violation",
+              "human_request",
+              "other"
+            ]
+          }
+        },
+        "route": {
+          "enum": [
+            "senior_human_review",
+            "independent_review_panel",
+            "mediation",
+            "external_legal_review",
+            "return_to_audit",
+            "manual_case_management"
+          ]
+        },
+        "max_escalation_rounds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolution_id",
+        "decision",
+        "decided_by",
+        "decided_at",
+        "reason",
+        "finality"
+      ],
+      "properties": {
+        "resolution_id": {
+          "type": "string",
+          "pattern": "^res-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "decision": {
+          "enum": [
+            "claims_confirmed",
+            "claims_modified",
+            "claim_removed",
+            "bundle_returned_for_reassessment",
+            "case_rejected",
+            "no_resolution"
+          ]
+        },
+        "decided_by": {
+          "enum": [
+            "human_reviewer",
+            "human_review_panel",
+            "mediated_agreement",
+            "multi_wing_recommendation_with_human_approval"
+          ]
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "affected_claim_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_bundle_updates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "update_claim_scope",
+              "update_assessment_status",
+              "attach_new_evidence",
+              "remove_unsupported_claim",
+              "resolve_conflict_flags",
+              "update_identity_binding",
+              "update_license_status",
+              "none"
+            ]
+          }
+        },
+        "finality": {
+          "enum": [
+            "provisional",
+            "final",
+            "final_subject_to_external_process"
+          ]
+        }
+      }
+    },
+    "readinessHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "target",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "eligible_for_reassessment",
+            "return_to_contribution_assessment",
+            "return_to_audit",
+            "remain_blocked",
+            "rejected"
+          ]
+        },
+        "target": {
+          "enum": [
+            "allocation_readiness_record",
+            "contribution_claim_bundle",
+            "audit_layer",
+            "blocking_rule_layer",
+            "terminal_record"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "updated_record_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
