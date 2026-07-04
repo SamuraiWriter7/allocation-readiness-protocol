@@ -354,3 +354,156 @@ Reassess
 
 The Blocking Rule Layer therefore transforms allocation readiness from a static checklist into a controlled transition system.
 
+## v0.3 — Contribution Claim Bundle
+
+Version 0.3 introduces the Contribution Claim Bundle.
+
+The Allocation Readiness Protocol can determine whether a case is ready to proceed and which conditions may block that progression.
+
+Before readiness can be meaningfully evaluated, however, contribution claims must be collected in a structured and reviewable form.
+
+The Contribution Claim Bundle records:
+
+* who claims contribution
+* what type of contribution is claimed
+* which part of the subject the claim concerns
+* what evidence supports the claim
+* how the claim relates to other claims
+* whether the claim has been assessed
+* whether conflicts have been detected
+
+### Core Flow
+
+```text
+Actor
+  ↓
+Contribution Claim
+  ↓
+Evidence
+  ↓
+Relationship
+  ↓
+Assessment
+  ↓
+Conflict Detection
+  ↓
+Allocation Readiness
+```
+
+### Contribution Types
+
+The initial vocabulary includes:
+
+* human question
+* human direction
+* concept origin
+* structural design
+* AI transformation
+* AI analysis
+* AI verification
+* source contribution
+* tool contribution
+* memory contribution
+* derivative transformation
+* review contribution
+
+The protocol intentionally separates different contribution roles.
+
+An originating question, an AI transformation, a source contribution, and a verification action are not assumed to be economically equivalent.
+
+v0.3 records these roles without assigning final royalty percentages.
+
+### Claim and Assessment Separation
+
+A claimant may assert a contribution.
+
+That assertion is not automatically treated as verified.
+
+```text
+Claimant Assertion
+        ↓
+Evidence
+        ↓
+Assessment
+        ↓
+Supported / Partial / Unsupported / Disputed
+```
+
+This separation preserves the difference between:
+
+* what is claimed
+* what is evidenced
+* what has been reviewed
+
+### Contribution Relationships
+
+Contribution claims may reference dependencies and influence relationships.
+
+```text
+Human Question
+      ↓
+AI Transformation
+      ↓
+Verification
+      ↓
+Reviewed Contribution Bundle
+```
+
+This allows the bundle to represent a minimal contribution graph rather than a flat participant list.
+
+### Conflict Detection
+
+The protocol can flag possible conflicts including:
+
+* duplicate claims
+* overlapping scope
+* origin conflicts
+* evidence conflicts
+* identity conflicts
+* license conflicts
+* allocation conflicts
+
+Conflict flags do not automatically resolve disputes.
+
+They identify cases that may require review or escalation.
+
+### Bundle Assessment
+
+A Contribution Claim Bundle may be classified as:
+
+* unassessed
+* pending
+* assessed
+* disputed
+* blocked
+
+Its allocation eligibility may be:
+
+* eligible for readiness check
+* requires review
+* blocked
+* disputed
+
+### Core Principle
+
+> Participation is not the same as contribution, and contribution is not the same as allocation.
+
+v0.3 separates these stages.
+
+```text
+Participation
+      ↓
+Contribution Claim
+      ↓
+Evidence
+      ↓
+Assessment
+      ↓
+Readiness
+      ↓
+Allocation
+```
+
+The Contribution Claim Bundle creates the reviewable bridge between activity records and downstream economic allocation.
+
+
