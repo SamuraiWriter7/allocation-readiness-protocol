@@ -1,0 +1,211 @@
+review_dispute_gate:
+  schema_version: "0.4.0"
+  record_type: review_dispute_gate
+
+  gate_id: rdg-contribution-overlap-001
+  created_at: "2026-07-05T09:10:00+09:00"
+
+  subject:
+    subject_id: contribution-case-001
+    subject_type: contribution_bundle
+
+    contribution_bundle_ref: ccb-kazene-protocol-case-001
+
+    claim_refs:
+      - cc-human-question-origin
+      - cc-ai-structural-transformation
+
+    readiness_record_ref: arr-kazene-origin-case-001
+    blocking_rule_ref: abr-human-review-required
+
+  trigger:
+    trigger_type: claim_conflict
+    detected_at: "2026-07-05T08:40:00+09:00"
+
+    summary: >-
+      A scope overlap was detected between an originating human contribution
+      claim and a later AI structural transformation claim.
+
+    conflict_flags:
+      - scope_overlap
+
+    source_ref: ccb-kazene-protocol-case-001
+
+  participants:
+
+    - participant_id: actor-human-originator-001
+      role: claimant
+      actor_type: human
+      identity_ref: identity-human-001
+      notification_status: acknowledged
+
+    - participant_id: actor-ai-structure-001
+      role: respondent
+      actor_type: ai_agent
+      notification_status: not_required
+
+    - participant_id: reviewer-human-001
+      role: reviewer
+      actor_type: human
+      identity_ref: identity-reviewer-001
+      notification_status: acknowledged
+
+    - participant_id: review-wing-001
+      role: observer
+      actor_type: multi_wing_review
+      notification_status: not_required
+
+  review_route:
+    route_type: multi_wing_then_human
+    reviewer_type: hybrid_review_panel
+    human_final_authority: true
+
+    review_scope:
+      - origin
+      - scope
+      - evidence
+      - contribution_role
+      - contribution_support
+      - allocation_eligibility
+
+    assigned_reviewer_refs:
+      - reviewer-human-001
+      - review-wing-001
+
+  case_status: resolved
+
+  dispute_window:
+    status: closed
+    opens_at: "2026-07-05T09:15:00+09:00"
+    closes_at: "2026-07-12T09:15:00+09:00"
+
+    late_submission_policy: manual_exception_review
+
+  submissions:
+
+    - submission_id: sub-originator-statement-001
+      submitted_by: actor-human-originator-001
+      submission_type: initial_statement
+      submitted_at: "2026-07-05T10:00:00+09:00"
+
+      statement: >-
+        The human claim concerns the originating question and problem
+        definition, while the AI claim concerns later structural transformation.
+
+      evidence_refs:
+        - trr-question-origin-001
+        - evidence-human-question-001
+
+      status: accepted_for_review
+
+
+    - submission_id: sub-ai-trace-evidence-001
+      submitted_by: actor-ai-structure-001
+      submission_type: evidence_submission
+      submitted_at: "2026-07-05T10:30:00+09:00"
+
+      statement: >-
+        The AI contribution trace shows formal transformation of the originating
+        question into protocol architecture and schema structure.
+
+      evidence_refs:
+        - trr-ai-structure-001
+        - diff-protocol-v0-1-to-v0-3
+
+      status: accepted_for_review
+
+  counterclaims: []
+
+  review_findings:
+
+    - finding_id: finding-origin-role-001
+      finding_type: origin_finding
+      status: supported
+
+      reason: >-
+        Trace evidence supports the human contribution as the originating
+        problem definition and initiating question.
+
+      evidence_refs:
+        - trr-question-origin-001
+
+      affected_claim_refs:
+        - cc-human-question-origin
+
+
+    - finding_id: finding-transformation-role-001
+      finding_type: contribution_finding
+      status: supported
+
+      reason: >-
+        Trace and diff evidence support the AI contribution as a distinct
+        structural transformation role rather than the origin of the question.
+
+      evidence_refs:
+        - trr-ai-structure-001
+        - diff-protocol-v0-1-to-v0-3
+
+      affected_claim_refs:
+        - cc-ai-structural-transformation
+
+
+    - finding_id: finding-scope-separation-001
+      finding_type: scope_finding
+      status: supported
+
+      reason: >-
+        The apparent overlap can be resolved by separating problem origin from
+        structural transformation.
+
+      affected_claim_refs:
+        - cc-human-question-origin
+        - cc-ai-structural-transformation
+
+  escalation_policy:
+    enabled: true
+
+    triggers:
+      - material_evidence_conflict
+      - reviewer_deadlock
+      - human_request
+
+    route: independent_review_panel
+    max_escalation_rounds: 2
+
+  resolution:
+    resolution_id: res-contribution-overlap-001
+    decision: claims_modified
+
+    decided_by: multi_wing_recommendation_with_human_approval
+    decided_at: "2026-07-12T11:00:00+09:00"
+
+    reason: >-
+      Both claims are supported when their scopes are explicitly separated.
+      The human claim is retained as originating question and problem definition,
+      while the AI claim is retained as structural transformation.
+
+    affected_claim_refs:
+      - cc-human-question-origin
+      - cc-ai-structural-transformation
+
+    required_bundle_updates:
+      - update_claim_scope
+      - resolve_conflict_flags
+
+    finality: final
+
+  readiness_handoff:
+    status: eligible_for_reassessment
+    target: allocation_readiness_record
+
+    reason: >-
+      The contribution scope conflict has been resolved and the updated
+      contribution bundle may return to allocation readiness assessment.
+
+    updated_record_refs:
+      - ccb-kazene-protocol-case-001-revised
+      - arr-kazene-origin-case-001
+
+  notes: >-
+    The gate resolves procedural contribution conflicts but does not assign
+    royalty percentages or execute economic allocation.
