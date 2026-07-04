@@ -2,7 +2,123 @@
 
 All notable changes to the Allocation Readiness Protocol will be documented in this file.
 
----
+## v0.3.0-candidate — Contribution Claim Bundle
+
+### Added
+
+* Contribution Claim Bundle schema
+* subject and upstream trace references
+* claimant actor records
+* contribution type vocabulary
+* claim scope records
+* evidence references
+* contribution relationship records
+* claimant assertions
+* contribution assessment states
+* evidence sufficiency assessment
+* conflict flags
+* bundle-level assessment
+* allocation eligibility state
+* review references
+* dispute references
+* example contribution bundle
+* validation target for the v0.3 schema and example
+
+### Contribution Types
+
+The initial contribution vocabulary includes:
+
+* `human_question`
+* `human_direction`
+* `concept_origin`
+* `structural_design`
+* `ai_transformation`
+* `ai_analysis`
+* `ai_verification`
+* `source_contribution`
+* `tool_contribution`
+* `memory_contribution`
+* `derivative_transformation`
+* `review_contribution`
+* `other`
+
+### Assessment States
+
+Contribution claims may be classified as:
+
+* `unassessed`
+* `pending`
+* `supported`
+* `partially_supported`
+* `unsupported`
+* `disputed`
+
+Supported, partially supported, unsupported, and disputed claims require an assessment record.
+
+### Relationship Model
+
+v0.3 introduces contribution relationships including:
+
+* originating
+* derivative
+* transformative
+* supporting
+* verification-only
+* unknown
+
+Claims may also declare:
+
+* dependency relationships
+* influence relationships
+
+This allows contribution records to form a minimal causal graph.
+
+### Conflict Flags
+
+The initial conflict vocabulary includes:
+
+* `duplicate_claim`
+* `scope_overlap`
+* `origin_conflict`
+* `evidence_conflict`
+* `identity_conflict`
+* `license_conflict`
+* `allocation_conflict`
+* `other`
+
+### Bundle Assessment
+
+Contribution Claim Bundles can now express:
+
+* assessment status
+* claim counts
+* supported claim count
+* pending claim count
+* disputed claim count
+* conflict status
+* allocation eligibility
+* assessment summary
+
+### Core Principle
+
+v0.3 formalizes the distinction between:
+
+```text
+Participation
+      ↓
+Contribution Claim
+      ↓
+Evidence
+      ↓
+Assessment
+      ↓
+Allocation Readiness
+```
+
+The protocol does not assume that every participant contributed equally, nor that every contribution claim is automatically valid.
+
+This release creates a reviewable contribution layer between trace evidence and downstream allocation readiness.
+
 
 ## v0.2.0-candidate — Blocking Rule Layer
 
