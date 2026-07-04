@@ -506,4 +506,193 @@ Allocation
 
 The Contribution Claim Bundle creates the reviewable bridge between activity records and downstream economic allocation.
 
+## v0.4 — Review / Dispute Gate
+
+Version 0.4 introduces a procedural Review and Dispute Gate.
+
+The Contribution Claim Bundle introduced in v0.3 can identify overlapping scopes, conflicting origin claims, evidence conflicts, identity conflicts, license conflicts, and other contribution-related issues.
+
+v0.4 defines how these cases move through a structured review and resolution process.
+
+### Core Flow
+
+```text
+Conflict Detection
+        ↓
+Review Routing
+        ↓
+Participant Notification
+        ↓
+Dispute Window
+        ↓
+Evidence Submission
+        ↓
+Response / Counterclaim
+        ↓
+Review Findings
+        ↓
+Resolution
+        ↓
+Readiness Handoff
+```
+
+The Review / Dispute Gate does not determine royalty percentages.
+
+Its purpose is to provide procedural structure before unresolved contribution claims are allowed to proceed toward economic allocation.
+
+### Review Routing
+
+Cases may use different review routes:
+
+* single review
+* multi-stage review
+* Multi-Wing review followed by human decision
+* human-only review
+* mediation followed by review
+
+The protocol can explicitly preserve human final authority.
+
+```yaml
+review_route:
+  route_type: multi_wing_then_human
+  human_final_authority: true
+```
+
+This allows AI systems to organize evidence, detect inconsistencies, compare claims, and generate review recommendations while preserving final human authority where required.
+
+### Dispute Window
+
+v0.4 introduces explicit dispute windows.
+
+A case can record:
+
+* opening time
+* closing time
+* current window status
+* late submission policy
+* extension reasons
+
+Late submission policies include:
+
+* rejection
+* manual exception review
+* acceptance with a procedural flag
+
+The dispute window prevents unresolved claims from remaining procedurally open indefinitely.
+
+### Submissions and Counterclaims
+
+Participants may submit:
+
+* initial statements
+* responses
+* evidence
+* counter-evidence
+* clarifications
+* responses to reviewer requests
+
+The protocol also supports structured counterclaims.
+
+Counterclaims may challenge a contribution claim on grounds including:
+
+* prior origin
+* scope overlap
+* insufficient evidence
+* incorrect attribution
+* license restriction
+* identity mismatch
+
+This converts disagreement into a reviewable procedural record.
+
+### Review Findings
+
+Review findings are separate from final resolution decisions.
+
+A finding may concern:
+
+* origin
+* scope
+* evidence
+* identity
+* licensing
+* contribution
+* procedure
+
+Each finding may be classified as:
+
+* supported
+* partially supported
+* unsupported
+* inconclusive
+
+This separation preserves the difference between factual assessment and final case disposition.
+
+### Resolution
+
+Resolution decisions may include:
+
+* claims confirmed
+* claims modified
+* claim removed
+* bundle returned for reassessment
+* case rejected
+* no resolution
+
+A resolution may also specify required updates to upstream records, including:
+
+* claim scope changes
+* assessment status changes
+* new evidence attachment
+* unsupported claim removal
+* conflict flag resolution
+* identity updates
+* license status updates
+
+### Readiness Handoff
+
+A resolved case does not automatically enter royalty allocation.
+
+The Review / Dispute Gate may return the case to:
+
+* allocation readiness reassessment
+* contribution assessment
+* audit
+* continued blocking
+* terminal rejection
+
+```text
+Resolution
+    ↓
+    ├─ Readiness Reassessment
+    ├─ Contribution Reassessment
+    ├─ Audit
+    ├─ Remain Blocked
+    └─ Rejected
+```
+
+### Core Principle
+
+> Conflict should suspend automatic allocation, but conflict resolution should create a structured path back into the protocol lifecycle.
+
+v0.4 therefore establishes the cycle:
+
+```text
+Detect
+  ↓
+Review
+  ↓
+Challenge
+  ↓
+Submit Evidence
+  ↓
+Decide
+  ↓
+Repair Records
+  ↓
+Reassess
+```
+
+The Review / Dispute Gate adds procedural fairness to the transition from contribution evidence toward value allocation.
+
+
 
