@@ -21,6 +21,11 @@ VALIDATION_TARGETS = [
         ROOT / "schemas" / "allocation-blocking-rule-set.schema.json",
         ROOT / "examples" / "allocation-blocking-rule-set.example.yaml",
     ),
+    (
+        "Contribution Claim Bundle",
+        ROOT / "schemas" / "contribution-claim-bundle.schema.json",
+        ROOT / "examples" / "contribution-claim-bundle.example.yaml",
+    ),
 ]
 
 def load_json(path: Path) -> dict:
