@@ -1,0 +1,598 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/royalty-os-handoff.schema.json",
+  "title": "Royalty OS Handoff",
+  "description": "A machine-readable handoff package for transferring allocation-ready, reviewed, and evidence-linked contribution records into downstream royalty allocation systems.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "royalty_os_handoff"
+  ],
+  "properties": {
+    "royalty_os_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "record_type",
+        "handoff_id",
+        "created_at",
+        "source_protocol",
+        "subject",
+        "eligibility_gate",
+        "upstream_refs",
+        "allocation_input_package",
+        "integrity",
+        "destination",
+        "transfer"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "0.5.0"
+        },
+        "record_type": {
+          "const": "royalty_os_handoff"
+        },
+        "handoff_id": {
+          "type": "string",
+          "pattern": "^roh-[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_protocol": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "protocol_name",
+            "protocol_version"
+          ],
+          "properties": {
+            "protocol_name": {
+              "const": "allocation-readiness-protocol"
+            },
+            "protocol_version": {
+              "const": "0.5.0"
+            }
+          }
+        },
+        "subject": {
+          "$ref": "#/$defs/subject"
+        },
+        "eligibility_gate": {
+          "$ref": "#/$defs/eligibilityGate"
+        },
+        "upstream_refs": {
+          "$ref": "#/$defs/upstreamRefs"
+        },
+        "allocation_input_package": {
+          "$ref": "#/$defs/allocationInputPackage"
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity"
+        },
+        "destination": {
+          "$ref": "#/$defs/destination"
+        },
+        "transfer": {
+          "$ref": "#/$defs/transfer"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "subject_type"
+      ],
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject_type": {
+          "enum": [
+            "creative_work",
+            "protocol",
+            "software_artifact",
+            "research_output",
+            "agent_output",
+            "composite_value_case",
+            "other"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "eligibilityGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readiness_status",
+        "origin_status",
+        "derivative_status",
+        "contribution_bundle_status",
+        "audit_status",
+        "identity_status",
+        "license_status",
+        "human_review_status",
+        "conflict_status",
+        "dispute_status",
+        "allocation_eligibility",
+        "gate_record_ref",
+        "reviewed_at"
+      ],
+      "properties": {
+        "readiness_status": {
+          "const": "ready"
+        },
+        "origin_status": {
+          "enum": [
+            "verified",
+            "not_applicable"
+          ]
+        },
+        "derivative_status": {
+          "enum": [
+            "resolved",
+            "not_applicable"
+          ]
+        },
+        "contribution_bundle_status": {
+          "const": "assessed"
+        },
+        "audit_status": {
+          "const": "passed"
+        },
+        "identity_status": {
+          "enum": [
+            "bound",
+            "not_applicable"
+          ]
+        },
+        "license_status": {
+          "enum": [
+            "permitted",
+            "not_applicable"
+          ]
+        },
+        "human_review_status": {
+          "enum": [
+            "completed",
+            "not_required"
+          ]
+        },
+        "conflict_status": {
+          "enum": [
+            "none",
+            "resolved"
+          ]
+        },
+        "dispute_status": {
+          "enum": [
+            "none",
+            "resolved",
+            "rejected"
+          ]
+        },
+        "allocation_eligibility": {
+          "const": "eligible_for_readiness_check"
+        },
+        "gate_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "upstreamRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readiness_record_ref",
+        "contribution_bundle_ref",
+        "audit_record_refs"
+      ],
+      "properties": {
+        "readiness_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contribution_bundle_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin_claim_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "derivative_record_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "audit_record_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "review_dispute_gate_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "resolution_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "trace_receipt_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blocking_rule_set_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "allocationCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_ref",
+        "claimant_ref",
+        "contribution_type",
+        "assessment_status",
+        "inclusion_status"
+      ],
+      "properties": {
+        "claim_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimant_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contribution_type": {
+          "enum": [
+            "human_question",
+            "human_direction",
+            "concept_origin",
+            "structural_design",
+            "ai_transformation",
+            "ai_analysis",
+            "ai_verification",
+            "source_contribution",
+            "tool_contribution",
+            "memory_contribution",
+            "derivative_transformation",
+            "review_contribution",
+            "other"
+          ]
+        },
+        "assessment_status": {
+          "enum": [
+            "supported",
+            "partially_supported"
+          ]
+        },
+        "inclusion_status": {
+          "enum": [
+            "included",
+            "excluded",
+            "manual_review"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "allocationInputPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_contributions",
+        "eligible_claim_refs",
+        "basis_refs",
+        "calculation_authority",
+        "percentage_assignment_status",
+        "payment_execution_status"
+      ],
+      "properties": {
+        "candidate_contributions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/allocationCandidate"
+          }
+        },
+        "eligible_claim_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "excluded_claim_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "basis_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "calculation_policy_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "settlement_policy_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "calculation_authority": {
+          "enum": [
+            "downstream_royalty_os",
+            "human_allocation_panel",
+            "hybrid_allocation_process",
+            "external_settlement_system"
+          ]
+        },
+        "percentage_assignment_status": {
+          "const": "not_assigned_by_this_protocol"
+        },
+        "payment_execution_status": {
+          "const": "not_executed_by_this_protocol"
+        },
+        "policy_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "human_approval_required",
+              "no_auto_payment",
+              "jurisdiction_review_required",
+              "external_policy_dependency",
+              "manual_settlement_required",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash_algorithm",
+        "package_hash",
+        "immutable_refs",
+        "generated_by",
+        "generated_at"
+      ],
+      "properties": {
+        "hash_algorithm": {
+          "enum": [
+            "sha256",
+            "sha3-256",
+            "blake3"
+          ]
+        },
+        "package_hash": {
+          "type": "string",
+          "minLength": 16
+        },
+        "immutable_refs": {
+          "type": "boolean"
+        },
+        "generated_by": {
+          "enum": [
+            "protocol_rule",
+            "human_reviewer",
+            "multi_wing_review",
+            "hybrid_process"
+          ]
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previous_handoff_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "destination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "destination_id",
+        "destination_type",
+        "transport_mode",
+        "expected_record_type",
+        "acknowledgement_required"
+      ],
+      "properties": {
+        "destination_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "destination_type": {
+          "enum": [
+            "royalty_os",
+            "allocation_engine",
+            "settlement_preprocessor",
+            "manual_review_queue"
+          ]
+        },
+        "transport_mode": {
+          "enum": [
+            "protocol_record",
+            "api",
+            "queue",
+            "file_exchange",
+            "manual_import"
+          ]
+        },
+        "expected_record_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acknowledgement_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "acknowledgement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acknowledgement_id",
+        "received_at",
+        "received_by",
+        "status"
+      ],
+      "properties": {
+        "acknowledgement_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "received_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "received_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "accepted_with_conditions",
+            "rejected"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "transfer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "prepared",
+            "submitted",
+            "accepted",
+            "rejected",
+            "acknowledged"
+          ]
+        },
+        "submitted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rejection_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acknowledgement": {
+          "$ref": "#/$defs/acknowledgement"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "accepted",
+                  "acknowledged"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "acknowledgement"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "rejected"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "rejection_reason"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
