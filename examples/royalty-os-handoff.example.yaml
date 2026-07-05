@@ -1,0 +1,158 @@
+royalty_os_handoff:
+  schema_version: "0.5.0"
+  record_type: royalty_os_handoff
+
+  handoff_id: roh-kazene-protocol-case-001
+  created_at: "2026-07-05T10:30:00+09:00"
+
+  source_protocol:
+    protocol_name: allocation-readiness-protocol
+    protocol_version: "0.5.0"
+
+  subject:
+    subject_id: protocol-case-001
+    subject_type: protocol
+    title: Allocation Readiness Protocol
+
+  eligibility_gate:
+    readiness_status: ready
+    origin_status: verified
+    derivative_status: resolved
+    contribution_bundle_status: assessed
+    audit_status: passed
+    identity_status: bound
+    license_status: permitted
+    human_review_status: completed
+    conflict_status: resolved
+    dispute_status: resolved
+
+    allocation_eligibility: eligible_for_readiness_check
+
+    gate_record_ref: arr-kazene-origin-case-001
+    reviewed_at: "2026-07-05T10:15:00+09:00"
+
+  upstream_refs:
+    readiness_record_ref: arr-kazene-origin-case-001
+
+    contribution_bundle_ref: ccb-kazene-protocol-case-001-revised
+
+    origin_claim_ref: origin-claim-protocol-001
+
+    derivative_record_refs:
+      - derivative-protocol-structure-001
+
+    audit_record_refs:
+      - audit-contribution-schema-001
+      - audit-final-readiness-001
+
+    review_dispute_gate_refs:
+      - rdg-contribution-overlap-001
+
+    resolution_refs:
+      - res-contribution-overlap-001
+
+    trace_receipt_refs:
+      - trr-question-origin-001
+      - trr-ai-structure-001
+      - trr-review-001
+
+    blocking_rule_set_ref: abrs-default-v0-2
+
+  allocation_input_package:
+
+    candidate_contributions:
+
+      - claim_ref: cc-human-question-origin
+        claimant_ref: actor-human-originator-001
+        contribution_type: human_question
+        assessment_status: supported
+        inclusion_status: included
+
+        reason: >-
+          The originating question and problem definition are supported
+          by trace evidence and final review findings.
+
+
+      - claim_ref: cc-ai-structural-transformation
+        claimant_ref: actor-ai-structure-001
+        contribution_type: ai_transformation
+        assessment_status: supported
+        inclusion_status: included
+
+        reason: >-
+          Structural transformation is supported by trace and diff evidence
+          and is distinct from the originating contribution.
+
+
+      - claim_ref: cc-review-verification
+        claimant_ref: actor-review-wing-001
+        contribution_type: ai_verification
+        assessment_status: supported
+        inclusion_status: included
+
+        reason: >-
+          Verification activity is supported as a bounded review contribution.
+
+    eligible_claim_refs:
+      - cc-human-question-origin
+      - cc-ai-structural-transformation
+      - cc-review-verification
+
+    excluded_claim_refs: []
+
+    basis_refs:
+      - ccb-kazene-protocol-case-001-revised
+      - audit-final-readiness-001
+      - res-contribution-overlap-001
+
+    calculation_policy_ref: royalty-allocation-policy-default-001
+
+    settlement_policy_ref: royalty-settlement-policy-default-001
+
+    calculation_authority: downstream_royalty_os
+
+    percentage_assignment_status: not_assigned_by_this_protocol
+    payment_execution_status: not_executed_by_this_protocol
+
+    policy_flags:
+      - human_approval_required
+      - no_auto_payment
+
+  integrity:
+    hash_algorithm: sha256
+
+    package_hash: >-
+      7f4a3d4f18f0c9be0a27b3620a6478f1c4ed01b072f53294e543ac53b84f27c9
+
+    immutable_refs: true
+
+    generated_by: hybrid_process
+    generated_at: "2026-07-05T10:25:00+09:00"
+
+    signature_ref: signature-royalty-handoff-001
+
+  destination:
+    destination_id: royalty-os-default-001
+    destination_type: royalty_os
+    transport_mode: protocol_record
+    expected_record_type: royalty-allocation-input
+    acknowledgement_required: true
+
+  transfer:
+    status: acknowledged
+
+    submitted_at: "2026-07-05T10:31:00+09:00"
+
+    acknowledgement:
+      acknowledgement_id: ack-royalty-os-001
+      received_at: "2026-07-05T10:32:00+09:00"
+      received_by: royalty-os-default-001
+      status: accepted
+
+      message: >-
+        Allocation-ready contribution package accepted for downstream
+        royalty calculation and policy evaluation.
+
+  notes: >-
+    This handoff transfers reviewed allocation inputs only.
+    It does not assign percentages, execute payment, or establish legal ownership.
