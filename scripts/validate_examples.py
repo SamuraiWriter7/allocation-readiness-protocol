@@ -31,6 +31,11 @@ VALIDATION_TARGETS = [
         ROOT / "schemas" / "review-dispute-gate.schema.json",
         ROOT / "examples" / "review-dispute-gate.example.yaml",
     ),
+    (
+        "Royalty OS Handoff",
+        ROOT / "schemas" / "royalty-os-handoff.schema.json",
+        ROOT / "examples" / "royalty-os-handoff.example.yaml",
+    ),
 ]
 
 def load_json(path: Path) -> dict:
