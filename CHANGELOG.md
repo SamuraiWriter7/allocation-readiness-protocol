@@ -1,46 +1,272 @@
 # Changelog
 
-All notable changes to the Allocation Readiness Protocol will be documented in this file.
+All notable changes to the Allocation Readiness Protocol are documented in this file.
 
-## v0.4.0-candidate — Review / Dispute Gate
+The protocol follows a staged first arc:
+
+```text
+Readiness
+    ↓
+Blocking
+    ↓
+Contribution
+    ↓
+Review / Dispute
+    ↓
+Royalty OS Handoff
+```
+
+---
+
+## v0.5.0-candidate — Royalty OS Bridge
+
+### Overview
+
+v0.5 introduces the Royalty OS Bridge and completes the first protocol arc.
+
+This release defines a machine-readable handoff package for transferring reviewed, resolved, and allocation-ready contribution records into downstream royalty allocation systems.
+
+The bridge does not assign final percentages or execute payments.
+
+Its responsibility is safe and reviewable protocol handoff.
 
 ### Added
 
-* Review and Dispute Gate schema
-* case subject references
+* Royalty OS Handoff schema
+* source protocol declaration
+* subject records
+* allocation eligibility gate
+* upstream protocol references
+* contribution candidate records
+* eligible claim references
+* excluded claim references
+* evidence and decision basis references
+* calculation policy references
+* settlement policy references
+* calculation authority declaration
+* percentage assignment boundary
+* payment execution boundary
+* policy flags
+* integrity hash metadata
+* immutable reference declaration
+* generation authority
+* generation timestamp
+* signature references
+* previous handoff references
+* destination records
+* destination types
+* transport modes
+* acknowledgement requirements
+* transfer lifecycle states
+* downstream acknowledgement records
+* rejection reason handling
+* Royalty OS Handoff example
+* validation target for the v0.5 schema and example
+
+### Eligibility Gate
+
+The handoff package can confirm:
+
+* readiness status
+* origin status
+* derivative status
+* contribution bundle status
+* audit status
+* identity status
+* license status
+* human review status
+* conflict status
+* dispute status
+* allocation eligibility
+
+The bridge is intended for reviewed and allocation-ready cases.
+
+### Allocation Input Package
+
+The handoff package can identify:
+
+* candidate contributions
+* claimant references
+* contribution types
+* assessment results
+* inclusion states
+* eligibility reasons
+* eligible claims
+* excluded claims
+* decision basis records
+* calculation policy
+* settlement policy
+
+### Protocol Boundary
+
+v0.5 explicitly preserves the separation between readiness and downstream allocation.
+
+```text
+percentage_assignment_status:
+  not_assigned_by_this_protocol
+
+payment_execution_status:
+  not_executed_by_this_protocol
+```
+
+The Allocation Readiness Protocol does not determine final royalty percentages or execute payment.
+
+### Integrity Layer
+
+The handoff package may include:
+
+* hash algorithm
+* package hash
+* immutable reference status
+* generation authority
+* generation timestamp
+* signature reference
+* previous handoff reference
+
+This protects the transition between reviewed protocol state and downstream economic processing.
+
+### Destination Model
+
+Supported destination types include:
+
+* `royalty_os`
+* `allocation_engine`
+* `settlement_preprocessor`
+* `manual_review_queue`
+
+Supported transport modes include:
+
+* `protocol_record`
+* `api`
+* `queue`
+* `file_exchange`
+* `manual_import`
+
+### Transfer Lifecycle
+
+v0.5 introduces:
+
+* `prepared`
+* `submitted`
+* `accepted`
+* `rejected`
+* `acknowledged`
+
+Accepted and acknowledged transfers may include downstream receipt records.
+
+Rejected transfers require a reason.
+
+### First Arc Completion
+
+v0.5 completes:
+
+```text
+v0.1
+Allocation Readiness Record
+        ↓
+v0.2
+Blocking Rule Layer
+        ↓
+v0.3
+Contribution Claim Bundle
+        ↓
+v0.4
+Review / Dispute Gate
+        ↓
+v0.5
+Royalty OS Bridge
+```
+
+The first arc now supports:
+
+```text
+Evidence
+   ↓
+Contribution Claim
+   ↓
+Assessment
+   ↓
+Conflict Review
+   ↓
+Resolution
+   ↓
+Readiness
+   ↓
+Royalty OS Handoff
+```
+
+### Core Principle
+
+> Allocation readiness is permission to enter economic evaluation, not a final economic judgment.
+
+---
+
+## v0.4.0-candidate — Review / Dispute Gate
+
+### Overview
+
+v0.4 introduces the procedural layer required when contribution claims, origin assertions, evidence records, identity conditions, license conditions, or allocation eligibility are contested.
+
+The release creates a structured path from conflict detection to resolution and readiness reassessment.
+
+### Added
+
+* Review / Dispute Gate schema
+* procedural case records
+* subject references
 * review trigger records
 * participant roles
 * notification status
 * review routing
+* reviewer types
 * human final authority flag
-* review scope definitions
+* review scope control
 * case lifecycle states
 * dispute windows
+* dispute window status
 * late submission policies
-* evidence submissions
-* responses and clarifications
-* structured counterclaims
+* extension reasons
+* participant submissions
+* evidence submission records
+* response records
+* clarification records
+* counterclaims
+* counterclaim grounds
 * review findings
 * escalation policies
+* escalation triggers
+* escalation routes
+* resolution records
 * resolution decisions
-* required upstream record updates
 * resolution finality states
+* required upstream record updates
 * readiness handoff records
-* example review and dispute case
+* example resolved review case
 * validation target for the v0.4 schema and example
 
 ### Review Triggers
 
-Cases may enter the Review / Dispute Gate because of:
+Supported triggers include:
 
-* claim conflict
-* manual review
-* blocking rule
-* audit exception
-* license issue
-* identity issue
-* open dispute
-* other procedural triggers
+* `claim_conflict`
+* `manual_review`
+* `blocking_rule`
+* `audit_exception`
+* `license_issue`
+* `identity_issue`
+* `open_dispute`
+* `other`
+
+### Participant Roles
+
+Supported roles include:
+
+* `claimant`
+* `respondent`
+* `reviewer`
+* `mediator`
+* `human_gate`
+* `observer`
 
 ### Review Routes
 
@@ -54,9 +280,9 @@ Supported review routes include:
 
 The protocol can explicitly preserve human final authority.
 
-### Case States
+### Case Lifecycle
 
-The review lifecycle introduces:
+v0.4 introduces:
 
 * `queued`
 * `under_review`
@@ -68,9 +294,15 @@ The review lifecycle introduces:
 
 ### Dispute Window
 
-v0.4 introduces explicit opening and closing times for dispute submissions.
+The protocol can record:
 
-Late submission handling may use:
+* opening time
+* closing time
+* current status
+* late submission policy
+* extension reason
+
+Supported late submission handling includes:
 
 * `reject`
 * `manual_exception_review`
@@ -78,7 +310,7 @@ Late submission handling may use:
 
 ### Counterclaims
 
-Counterclaims may challenge existing contribution claims on grounds including:
+Counterclaims can challenge claims because of:
 
 * prior origin
 * scope overlap
@@ -86,29 +318,51 @@ Counterclaims may challenge existing contribution claims on grounds including:
 * incorrect attribution
 * license restriction
 * identity mismatch
+* other grounds
 
 ### Review Findings
 
-Review findings may evaluate:
+Finding types include:
 
-* origin
-* claim scope
-* evidence
-* identity
-* license conditions
-* contribution support
-* procedural compliance
+* origin finding
+* scope finding
+* evidence finding
+* identity finding
+* license finding
+* contribution finding
+* procedural finding
 
-Findings may be:
+Finding status may be:
 
 * supported
 * partially supported
 * unsupported
 * inconclusive
 
-### Resolution Decisions
+### Escalation
 
-Initial resolution outcomes include:
+Supported triggers include:
+
+* material evidence conflict
+* reviewer deadlock
+* identity failure
+* license uncertainty
+* procedural violation
+* human request
+* other defined conditions
+
+Supported routes include:
+
+* senior human review
+* independent review panel
+* mediation
+* external legal review
+* return to audit
+* manual case management
+
+### Resolution
+
+Initial resolution decisions include:
 
 * `claims_confirmed`
 * `claims_modified`
@@ -117,7 +371,15 @@ Initial resolution outcomes include:
 * `case_rejected`
 * `no_resolution`
 
-Resolution records may also identify required updates to upstream contribution, evidence, identity, license, or conflict records.
+Resolution records may require:
+
+* claim scope updates
+* assessment status updates
+* new evidence attachment
+* unsupported claim removal
+* conflict flag resolution
+* identity binding updates
+* license status updates
 
 ### Readiness Handoff
 
@@ -131,52 +393,83 @@ Resolved cases may be routed to:
 
 ### Core Principle
 
-v0.4 formalizes the principle that unresolved contribution conflicts should prevent automatic allocation, while resolved cases should have an explicit route back into the protocol lifecycle.
+> Conflict should suspend automatic allocation, but conflict resolution should create a structured path back into the protocol lifecycle.
 
 The protocol now supports:
 
 ```text
-Contribution Claim
-      ↓
-Conflict Detection
-      ↓
-Review / Dispute
-      ↓
+Conflict
+   ↓
+Review
+   ↓
+Evidence
+   ↓
+Counterclaim
+   ↓
+Finding
+   ↓
 Resolution
-      ↓
+   ↓
 Record Repair
-      ↓
-Readiness Reassessment
+   ↓
+Reassessment
 ```
 
-This release adds procedural review and dispute resolution to the transition between contribution causality and value allocation.
-
+---
 
 ## v0.3.0-candidate — Contribution Claim Bundle
+
+### Overview
+
+v0.3 introduces a structured contribution layer between trace evidence and allocation readiness.
+
+The release provides a machine-readable format for recording:
+
+* who claims contribution
+* what type of contribution is claimed
+* which part of the subject is affected
+* what evidence supports the claim
+* how the claim relates to other contributions
+* whether the claim has been assessed
+* whether conflicts have been detected
 
 ### Added
 
 * Contribution Claim Bundle schema
-* subject and upstream trace references
+* subject records
+* upstream trace references
+* origin references
+* derivative references
 * claimant actor records
+* actor types
+* identity status
 * contribution type vocabulary
 * claim scope records
-* evidence references
+* artifact references
+* contribution time windows
+* evidence records
+* evidence types
 * contribution relationship records
+* dependency references
+* influence references
 * claimant assertions
+* claimed importance levels
 * contribution assessment states
-* evidence sufficiency assessment
+* formal assessment records
+* assessor types
+* evidence sufficiency status
 * conflict flags
 * bundle-level assessment
-* allocation eligibility state
+* claim count fields
+* allocation eligibility status
 * review references
 * dispute references
-* example contribution bundle
+* Contribution Claim Bundle example
 * validation target for the v0.3 schema and example
 
 ### Contribution Types
 
-The initial contribution vocabulary includes:
+The initial vocabulary includes:
 
 * `human_question`
 * `human_direction`
@@ -192,9 +485,37 @@ The initial contribution vocabulary includes:
 * `review_contribution`
 * `other`
 
+### Actor Types
+
+Contribution claims may be associated with:
+
+* human
+* AI model
+* AI agent
+* organization
+* source
+* tool
+* memory system
+* mixed actor structure
+
+### Evidence Types
+
+Initial evidence types include:
+
+* trace receipt
+* source interaction
+* timestamp record
+* diff record
+* audit record
+* human attestation
+* tool log
+* memory trace
+* derivative record
+* other evidence
+
 ### Assessment States
 
-Contribution claims may be classified as:
+Contribution claims may be:
 
 * `unassessed`
 * `pending`
@@ -203,11 +524,11 @@ Contribution claims may be classified as:
 * `unsupported`
 * `disputed`
 
-Supported, partially supported, unsupported, and disputed claims require an assessment record.
+Claims with completed assessment outcomes require an assessment record.
 
 ### Relationship Model
 
-v0.3 introduces contribution relationships including:
+Supported contribution relationships include:
 
 * originating
 * derivative
@@ -216,16 +537,13 @@ v0.3 introduces contribution relationships including:
 * verification-only
 * unknown
 
-Claims may also declare:
-
-* dependency relationships
-* influence relationships
+Claims may also reference dependencies and influence relationships.
 
 This allows contribution records to form a minimal causal graph.
 
 ### Conflict Flags
 
-The initial conflict vocabulary includes:
+Initial conflict types include:
 
 * `duplicate_claim`
 * `scope_overlap`
@@ -238,10 +556,10 @@ The initial conflict vocabulary includes:
 
 ### Bundle Assessment
 
-Contribution Claim Bundles can now express:
+Contribution bundles may record:
 
-* assessment status
-* claim counts
+* bundle status
+* claim count
 * supported claim count
 * pending claim count
 * disputed claim count
@@ -251,7 +569,9 @@ Contribution Claim Bundles can now express:
 
 ### Core Principle
 
-v0.3 formalizes the distinction between:
+> Participation is not the same as contribution, and contribution is not the same as allocation.
+
+The lifecycle becomes:
 
 ```text
 Participation
@@ -262,23 +582,30 @@ Evidence
       ↓
 Assessment
       ↓
+Conflict Review
+      ↓
 Allocation Readiness
 ```
 
-The protocol does not assume that every participant contributed equally, nor that every contribution claim is automatically valid.
-
-This release creates a reviewable contribution layer between trace evidence and downstream allocation readiness.
-
+---
 
 ## v0.2.0-candidate — Blocking Rule Layer
+
+### Overview
+
+v0.2 introduces a machine-readable rule layer for determining why a case is blocked, deferred, disputed, or rejected.
+
+The release transforms allocation readiness from a static state record into a controlled transition system.
 
 ### Added
 
 * Allocation Blocking Rule Set schema
 * machine-readable rule conditions
+* rule identity
 * rule priority
-* rule enable / disable control
-* `all` and `any` condition matching
+* rule enable / disable state
+* `all` matching
+* `any` matching
 * decision transition actions
 * blocking issue generation
 * severity classification
@@ -286,11 +613,11 @@ This release creates a reviewable contribution layer between trace evidence and 
 * terminal rule behavior
 * remediation actions
 * required evidence declarations
-* deterministic conflict resolution policy
+* conflict resolution strategy
 * decision precedence
-* default no-match behavior
+* default behavior
 * example blocking rule set
-* validation target for the new v0.2 schema and example
+* validation target for the v0.2 schema and example
 
 ### Initial Blocking Rules
 
@@ -308,14 +635,12 @@ The example rule set introduces handling for:
 
 ### Resolution Policy
 
-v0.2 introduces explicit rule resolution behavior.
-
-Supported strategies:
+Supported rule resolution strategies include:
 
 * `most_restrictive_decision`
 * `highest_priority_first`
 
-The default decision precedence is:
+The default precedence is:
 
 ```text
 rejected
@@ -325,9 +650,7 @@ pending_review
 ready
 ```
 
-### Remediation Model
-
-Blocking rules can now define how a case may return to readiness assessment.
+### Remediation Actions
 
 Initial remediation actions include:
 
@@ -344,46 +667,72 @@ Initial remediation actions include:
 
 ### Core Principle
 
-v0.2 formalizes the principle that a blocking decision should be explainable and, where appropriate, recoverable.
+> A blocking decision should not be an unexplained dead end.
 
-The protocol now supports the cycle:
+Where remediation is possible, the protocol records:
+
+* why the case was stopped
+* what action must occur next
+* what evidence is needed
+* how the case may return to reassessment
+
+The control cycle is:
 
 ```text
-Readiness Check
-      ↓
-Rule Match
-      ↓
-Block or Review
-      ↓
-Remediation
-      ↓
+Detect
+  ↓
+Block
+  ↓
+Explain
+  ↓
+Repair
+  ↓
 Evidence Update
-      ↓
-Reassessment
+  ↓
+Reassess
 ```
 
-This release transforms allocation readiness from a static status record into a controlled transition layer between audit and royalty allocation.
-
+---
 
 ## v0.1.0-candidate — Allocation Readiness Record
 
+### Overview
+
+v0.1 introduces the minimal Allocation Readiness Record.
+
+The release defines a machine-readable structure for determining whether an audited value trace is ready to proceed toward downstream royalty allocation.
+
 ### Added
 
-* Initial Allocation Readiness Record schema
-* Machine-readable readiness checks
-* Subject and upstream record references
-* Readiness decision states
-* Blocking issue records
-* Human-review-aware decision logic
-* Open-dispute blocking rules
-* Ready-state validation constraints
-* YAML example record
+* Allocation Readiness Record schema
+* protocol version metadata
+* record identity
+* creation timestamp
+* subject records
+* subject types
+* upstream trace references
+* origin references
+* derivative references
+* contribution references
+* audit references
+* readiness checks
+* readiness decision states
+* blocking issue records
+* decision reason
+* decision authority
+* decision timestamp
+* human-review-aware validation
+* dispute-aware validation
+* ready-state constraints
+* YAML example
 * Python validation script
 * GitHub Actions validation workflow
+* initial README
+* initial changelog
 
-### Readiness dimensions
+### Readiness Dimensions
 
-The initial protocol evaluates:
+The first release evaluates:
 
 * origin status
 * derivative status
@@ -394,9 +743,9 @@ The initial protocol evaluates:
 * human review status
 * dispute status
 
-### Decision states
+### Decision States
 
-The protocol defines:
+The protocol introduces:
 
 * `ready`
 * `pending_review`
@@ -404,18 +753,107 @@ The protocol defines:
 * `disputed`
 * `rejected`
 
-### Core principle
+### Ready-State Constraints
 
-Audit completion does not automatically imply allocation readiness.
+A `ready` decision requires applicable readiness conditions to be satisfied.
 
-A case may remain blocked because of unresolved origin claims, derivative relationships, contribution assessment, identity binding, licensing conditions, human review requirements, or open disputes.
+For example:
 
-### Purpose
+* failed audit cannot be marked ready
+* open dispute cannot be marked ready
+* pending required human review cannot be marked ready
+* unresolved critical readiness conditions cannot be silently treated as ready
 
-v0.1 establishes the minimal gate between audited provenance records and downstream royalty allocation systems.
+### Blocking Issues
 
-### Important note
+Initial issue codes include:
 
-This protocol does not execute payments, determine legal ownership, calculate final royalty shares, or create legal royalty claims.
+* `unverified_origin`
+* `unresolved_derivative`
+* `contribution_unassessed`
+* `audit_failed`
+* `identity_unbound`
+* `license_unknown`
+* `license_restricted`
+* `human_review_required`
+* `open_dispute`
+* `missing_evidence`
+* `other`
 
-It records allocation readiness and preserves reasons for progression, review, blocking, dispute, or rejection.
+### Core Principle
+
+> Audit completion does not automatically imply allocation readiness.
+
+A case may remain blocked because of:
+
+* unresolved origin
+* unresolved derivative relationships
+* incomplete contribution assessment
+* identity conditions
+* license uncertainty
+* pending human review
+* open dispute
+
+v0.1 establishes the minimal procedural gate between audited provenance and downstream economic allocation.
+
+---
+
+# First Arc Summary
+
+The first protocol arc evolves as follows:
+
+```text
+v0.1
+Record whether a case is ready.
+        ↓
+v0.2
+Explain why it is blocked and how it can return.
+        ↓
+v0.3
+Structure who contributed what and why.
+        ↓
+v0.4
+Review and resolve contribution conflicts.
+        ↓
+v0.5
+Transfer approved cases into downstream Royalty OS processing.
+```
+
+The complete lifecycle is:
+
+```text
+Trace
+  ↓
+Origin
+  ↓
+Derivative
+  ↓
+Contribution Claim
+  ↓
+Evidence
+  ↓
+Assessment
+  ↓
+Conflict Detection
+  ↓
+Blocking / Review
+  ↓
+Dispute Resolution
+  ↓
+Record Repair
+  ↓
+Readiness
+  ↓
+Integrity
+  ↓
+Royalty OS Handoff
+```
+
+The first arc establishes a procedural bridge between:
+
+> **audited contribution causality**
+
+and:
+
+> **downstream value circulation**
+
